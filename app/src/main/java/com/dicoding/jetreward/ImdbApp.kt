@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -24,14 +24,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dicoding.jetreward.ui.navigation.NavigationItem
 import com.dicoding.jetreward.ui.navigation.Screen
-import com.dicoding.jetreward.ui.screen.cart.CartScreen
+import com.dicoding.jetreward.ui.screen.favorite.FavScreen
 import com.dicoding.jetreward.ui.screen.detail.DetailScreen
 import com.dicoding.jetreward.ui.screen.home.HomeScreen
 import com.dicoding.jetreward.ui.screen.profile.ProfileScreen
 import com.dicoding.jetreward.ui.theme.JetRewardTheme
 
 @Composable
-fun JetRewardApp(
+fun ImdbApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
@@ -60,9 +60,9 @@ fun JetRewardApp(
             }
             composable(Screen.Cart.route) {
                 val context = LocalContext.current
-                CartScreen(
+                FavScreen(
                     onOrderButtonClicked = { message ->
-                        shareOrder(context, message)
+                        shareFav(context, message)
                     }
                 )
             }
@@ -75,27 +75,27 @@ fun JetRewardApp(
             ) {
                 val id = it.arguments?.getLong("rewardId") ?: -1L
                 DetailScreen(
-                    rewardId = id,
+                    movieId = id,
                     navigateBack = {
                         navController.navigateUp()
                     },
-                    navigateToCart = {
-                        navController.popBackStack()
-                        navController.navigate(Screen.Cart.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
+//                    navigateToCart = {
+//                        navController.popBackStack()
+//                        navController.navigate(Screen.Cart.route) {
+//                            popUpTo(navController.graph.findStartDestination().id) {
+//                                saveState = true
+//                            }
+//                            launchSingleTop = true
+//                            restoreState = true
+//                        }
+//                    }
                 )
             }
         }
     }
 }
 
-private fun shareOrder(context: Context, summary: String) {
+private fun shareFav(context: Context, summary: String) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.dicoding_reward))
@@ -127,12 +127,12 @@ private fun BottomBar(
                 screen = Screen.Home
             ),
             NavigationItem(
-                title = stringResource(R.string.menu_cart),
-                icon = Icons.Default.ShoppingCart,
+                title = stringResource(R.string.menu_fav),
+                icon = Icons.Default.Favorite,
                 screen = Screen.Cart
             ),
             NavigationItem(
-                title = stringResource(R.string.menu_profile),
+                title = stringResource(R.string.menu_about),
                 icon = Icons.Default.AccountCircle,
                 screen = Screen.Profile
             ),
@@ -164,8 +164,8 @@ private fun BottomBar(
 
 @Preview(showBackground = true)
 @Composable
-fun JetHeroesAppPreview() {
+fun ImdbAppPreview() {
     JetRewardTheme {
-        JetRewardApp()
+        ImdbApp()
     }
 }

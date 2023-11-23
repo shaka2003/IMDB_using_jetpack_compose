@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">JetReward</string>
     <string name="menu_home">Home</string>
-    <string name="menu_cart">Keranjang</string>
-    <string name="menu_profile">Profile</string>
-    <string name="required_point">%d</string>
+    <string name="menu_fav">Favorite</string>
+    <string name="menu_about">About</string>
+    <string name="release_year">%d</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </string>
     <string name="minus_symbol">—</string>
     <string name="plus_symbol">＋</string>
-    <string name="add_to_cart">Tambah ke Keranjang : %d Pts</string>
+    <string name="add_to_fav">Add To Favorite</string>
     <string name="total_order">Total pesanan : %d Pts</string>
     <string name="back">Back</string>
     <string name="dicoding_reward">Dicoding Reward</string>

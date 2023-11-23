@@ -4,23 +4,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.dicoding.jetreward.JetRewardApp
 import com.dicoding.jetreward.di.Injection
-import com.dicoding.jetreward.model.OrderReward
+import com.dicoding.jetreward.model.MovieList
 import com.dicoding.jetreward.ui.ViewModelFactory
 import com.dicoding.jetreward.ui.common.UiState
-import com.dicoding.jetreward.ui.components.RewardItem
-import com.dicoding.jetreward.ui.theme.JetRewardTheme
+import com.dicoding.jetreward.ui.components.MovieItem
 
 @Composable
 fun HomeScreen(
@@ -39,11 +33,11 @@ fun HomeScreen(
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
             is UiState.Loading -> {
-                viewModel.getAllRewards()
+                viewModel.getAllMovies()
             }
             is UiState.Success -> {
                 HomeContent(
-                    orderReward = uiState.data,
+                    movieList = uiState.data,
                     modifier = modifier,
                     navigateToDetail = navigateToDetail,
                 )
@@ -55,7 +49,7 @@ fun HomeScreen(
 
 @Composable
 fun HomeContent(
-    orderReward: List<OrderReward>,
+    movieList: List<MovieList>,
     modifier: Modifier = Modifier,
     navigateToDetail: (Long) -> Unit,
 ) {
@@ -64,13 +58,16 @@ fun HomeContent(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(orderReward) { data ->
-            RewardItem(
-                image = data.reward.image,
-                title = data.reward.title,
-                requiredPoint = data.reward.release,
+        items(movieList) { data ->
+            MovieItem(
+                image = data.movie.image,
+                title = data.movie.title,
+                release = data.movie.release,
+                sinopsis = data.movie.sinopsis,
+                director = data.movie.director,
+                cast = data.movie.cast,
                 modifier = Modifier.clickable {
-                    navigateToDetail(data.reward.id)
+                    navigateToDetail(data.movie.id)
                 }
             )
         }

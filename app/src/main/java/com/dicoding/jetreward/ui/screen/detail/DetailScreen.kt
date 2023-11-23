@@ -10,11 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,38 +26,34 @@ import com.dicoding.jetreward.R
 import com.dicoding.jetreward.di.Injection
 import com.dicoding.jetreward.ui.ViewModelFactory
 import com.dicoding.jetreward.ui.common.UiState
-import com.dicoding.jetreward.ui.components.OrderButton
-import com.dicoding.jetreward.ui.components.ProductCounter
+import com.dicoding.jetreward.ui.components.FavButton
 import com.dicoding.jetreward.ui.theme.JetRewardTheme
 
 @Composable
 fun DetailScreen(
-    rewardId: Long,
-    viewModel: DetailRewardViewModel = viewModel(
+    movieId: Long,
+    viewModel: DetailMovieViewModel = viewModel(
         factory = ViewModelFactory(
             Injection.provideRepository()
         )
     ),
     navigateBack: () -> Unit,
-    navigateToCart: () -> Unit
 ) {
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
             is UiState.Loading -> {
-                viewModel.getRewardById(rewardId)
+                viewModel.getRewardById(movieId)
             }
             is UiState.Success -> {
                 val data = uiState.data
                 DetailContent(
-                    data.reward.image,
-                    data.reward.title,
-                    data.reward.release,
-                    data.count,
+                    data.movie.image,
+                    data.movie.title,
+                    data.movie.release,
+                    data.movie.sinopsis,
+                    data.movie.director,
+                    data.movie.cast,
                     onBackClick = navigateBack,
-                    onAddToCart = { count ->
-                        viewModel.addToCart(data.reward, count)
-                        navigateToCart()
-                    }
                 )
             }
             is UiState.Error -> {}
@@ -72,14 +66,12 @@ fun DetailContent(
     @DrawableRes image: Int,
     title: String,
     basePoint: Int,
-    count: Int,
+    sinopsis: String,
+    director: String,
+    cast: String,
     onBackClick: () -> Unit,
-    onAddToCart: (count: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    var totalPoint by rememberSaveable { mutableStateOf(0) }
-    var orderCount by rememberSaveable { mutableStateOf(count) }
 
     Column(modifier = modifier) {
         Column(
@@ -92,14 +84,17 @@ fun DetailContent(
                     painter = painterResource(image),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = modifier.height(400.dp)
+                    modifier = modifier
+                        .height(400.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
                 )
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = stringResource(R.string.back),
-                    modifier = Modifier.padding(16.dp).clickable { onBackClick() }
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .clickable { onBackClick() }
                 )
             }
             Column(
@@ -114,37 +109,42 @@ fun DetailContent(
                     ),
                 )
                 Text(
-                    text = stringResource(R.string.required_point, basePoint),
+                    text = stringResource(R.string.release_year, basePoint),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.ExtraBold
                     ),
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Text(
-                    text = stringResource(R.string.lorem_ipsum),
+                    text = sinopsis,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Justify,
                 )
             }
+
+            Column (
+                modifier = Modifier.padding(16.dp)
+            ){
+                Text(
+                    text = "Director : " + director
+                )
+                Text(
+                    text = "Cast : " + cast
+                )
+            }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().height(4.dp).background(LightGray))
+
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            ProductCounter(
-                1,
-                orderCount,
-                onProductIncreased = { orderCount++ },
-                onProductDecreased = { if (orderCount > 0) orderCount-- },
-                modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 16.dp)
-            )
-            totalPoint = basePoint * orderCount
-            OrderButton(
-                text = stringResource(R.string.add_to_cart, totalPoint),
-                enabled = orderCount > 0,
+            FavButton(
+                text = stringResource(R.string.add_to_fav),
                 onClick = {
-                    onAddToCart(orderCount)
-                }
+
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp),
             )
         }
     }
@@ -158,9 +158,10 @@ fun DetailContentPreview() {
             R.drawable.reward_4,
             "Jaket Hoodie Dicoding",
             7500,
-            1,
+            "sinopsis",
+            "quentin",
+            "rob",
             onBackClick = {},
-            onAddToCart = {}
         )
     }
 }

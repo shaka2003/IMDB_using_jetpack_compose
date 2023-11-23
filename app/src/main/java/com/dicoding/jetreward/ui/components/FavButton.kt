@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.dicoding.jetreward.ui.theme.JetRewardTheme
 
 @Composable
-fun OrderButton(
+fun FavButton(
     text: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -34,8 +34,8 @@ fun OrderButton(
 @Preview(showBackground = true)
 fun OrderButtonPreview() {
     JetRewardTheme {
-        OrderButton(
-            text = "Order",
+        FavButton(
+            text = "Add to fav",
             onClick = {}
         )
     }
