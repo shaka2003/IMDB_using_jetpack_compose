@@ -1,8 +1,10 @@
 package com.dicoding.jetreward.data
 
 import com.dicoding.jetreward.model.FakeRewardDataSource
+import com.dicoding.jetreward.model.Movie
 import com.dicoding.jetreward.model.MovieList
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
 class MovieRepository {
@@ -50,5 +52,11 @@ class MovieRepository {
                     instance = this
                 }
             }
+    }
+
+    fun searchHeroes(query: String): List<Movie>{
+        return FakeRewardDataSource.dummyMovies.filter {
+            it.title.contains(query, ignoreCase = true)
+        }
     }
 }
